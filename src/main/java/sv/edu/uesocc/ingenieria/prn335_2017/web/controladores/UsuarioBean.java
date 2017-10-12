@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import sv.edu.uesocc.ingenieria.prn335_2017.datos.acceso.UsuarioFacadeLocal;
@@ -60,14 +62,19 @@ public class UsuarioBean implements Serializable{
     }
 
     public void crear() {
-        System.out.println(data.getComentarios());
-        System.out.println(data.getFechaNacimiento());
-        
             try {
                 usuario.create(data);
+                init();
+                showMessage("Datos ingresado correctamente.");
             } catch (Exception e) {
                 System.out.println("Error: " + e);
+                showMessage("Error al ingresar los datos.");
             }
+    }
+    
+    public void showMessage(String Mensaje) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(null, new FacesMessage(Mensaje));
     }
     
     @PostConstruct
