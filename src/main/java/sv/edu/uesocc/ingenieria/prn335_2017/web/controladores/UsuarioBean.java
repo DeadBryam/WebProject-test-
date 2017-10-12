@@ -9,13 +9,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javafx.scene.chart.PieChart;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import sv.edu.uesocc.ingenieria.prn335_2017.datos.acceso.UsuarioFacadeLocal;
 import sv.edu.uesocc.ingenieria.prn335_2017.datos.definiciones.Usuario;
 
@@ -33,6 +36,15 @@ public class UsuarioBean implements Serializable{
     public UsuarioBean() {
     }
     
+    boolean activo;
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
     @EJB
     UsuarioFacadeLocal usuario;
     List<Usuario> usuarioData = new ArrayList<>();
@@ -74,9 +86,33 @@ public class UsuarioBean implements Serializable{
             }
     }
     
+    public void chkCambio(){
+        if(activo == true){
+            this.usuarioData = obtenerUtilizados();
+            System.out.println("Funciona");
+        }else{
+            init();
+            System.out.println("No funciona");
+        }
+    }
+    
     public void showMessage(String Mensaje) {
         FacesContext context = FacesContext.getCurrentInstance();
         context.addMessage(null, new FacesMessage(Mensaje));
+    }
+    
+    public List<Usuario> obtenerUtilizados() {
+        List salida;
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("sv.edu.uesocc.ingenieria.prn335_2017_WebProject_war_1.0-SNAPSHOTPU");
+        EntityManager em = emf.createEntityManager();
+        Query c = em.createNamedQuery("Usuario.noUtilizados");
+        salida = c.getResultList();
+        
+        if(salida != null){
+        return salida;
+        }else{
+            return Collections.EMPTY_LIST;
+        }
     }
     
     @PostConstruct
