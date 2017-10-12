@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javafx.scene.chart.PieChart;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -66,6 +67,7 @@ public class UsuarioBean implements Serializable{
                 usuario.create(data);
                 init();
                 showMessage("Datos ingresado correctamente.");
+                data = new Usuario();
             } catch (Exception e) {
                 System.out.println("Error: " + e);
                 showMessage("Error al ingresar los datos.");
