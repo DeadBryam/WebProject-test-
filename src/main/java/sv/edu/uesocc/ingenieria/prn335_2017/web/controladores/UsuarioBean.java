@@ -73,7 +73,10 @@ public class UsuarioBean implements Serializable{
     public void setData(Usuario data) {
         this.data = data;
     }
-
+    
+    /**
+     * Este metodo sirve para poder agregar un nuevo registro a la base de datos
+     */
     public void crear() {
             try {
                 usuario.create(data);
@@ -85,24 +88,37 @@ public class UsuarioBean implements Serializable{
                 showMessage("Error al ingresar los datos.");
             }
     }
-    
+    /**
+     * Es metodo sirve para detectar el cambio de un checkbox alojado en el jsf
+     */
     public void chkCambio(){
         if(activo == true){
             this.usuarioData = obtenerUtilizados();
         }else{
             init();
         }
+        
     }
     
+    /**
+     * Este metodo sirve para mostrar un mensaje un el usuario
+     * @param Mensaje espera el mensaje que sera mostrado al usuario
+     */
     public void showMessage(String Mensaje) {
         FacesContext context = FacesContext.getCurrentInstance();
         context.addMessage(null, new FacesMessage(Mensaje));
     }
-    
+    /**
+     * Este metodo sirve para limpiar el formulario
+     */
     public void btnLimpiar(){
         data = new Usuario();
     }
     
+    /**
+     * Este metodo sirve para filtrar usuarios no utilizados 
+     * @return una lista con los usuarios que no han sido utiizados
+     */
     public List<Usuario> obtenerUtilizados() {
         List salida;
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("sv.edu.uesocc.ingenieria.prn335_2017_WebProject_war_1.0-SNAPSHOTPU");
@@ -118,6 +134,9 @@ public class UsuarioBean implements Serializable{
     }
     
     @PostConstruct
+    /**
+     * Este metodo llena una lista con los dato de la base de datos
+     */
     public void init() {
         if (usuarioData != null) {
             this.usuarioData = usuario.findAll();
