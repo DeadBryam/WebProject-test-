@@ -89,16 +89,18 @@ public class UsuarioBean implements Serializable{
     public void chkCambio(){
         if(activo == true){
             this.usuarioData = obtenerUtilizados();
-            System.out.println("Funciona");
         }else{
             init();
-            System.out.println("No funciona");
         }
     }
     
     public void showMessage(String Mensaje) {
         FacesContext context = FacesContext.getCurrentInstance();
         context.addMessage(null, new FacesMessage(Mensaje));
+    }
+    
+    public void btnLimpiar(){
+        data = new Usuario();
     }
     
     public List<Usuario> obtenerUtilizados() {
