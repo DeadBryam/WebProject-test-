@@ -7,76 +7,79 @@
     <h:head>
         <title>Usuarios</title>
     </h:head>
-    <h:body>
+    <h:body style="background: #004D40">
         <f:view>
-            <h1 align="center">Tabla usuarios</h1>
+            <h1 align="center" style="color: white;font-family: cursive">Tabla usuarios</h1>
             <h:form id="frmDatos" >
                 <div>
-                    <p:selectBooleanCheckbox id="chkUsados" value="#{usuarioBean.activo}" itemLabel="Motrar los no utilizados" >
+                    <p:selectBooleanCheckbox id="chkUsados" value="#{usuarioBean.chkFitro}" itemLabel="Mostrar los no utilizados" style="color: white">
                         <p:ajax update="datos" listener="#{usuarioBean.chkCambio()}"/>
                     </p:selectBooleanCheckbox>
                 </div>
                 <div>
-                    <p:dataTable value="#{usuarioBean.usuarioData}" var="item" id="datos" paginator="true" rows="6" >
+                    <p:dataTable value="#{usuarioBean.usuarioData}" var="item" id="datos" paginator="true" rows="6" selectionMode="single" selection="#{usuarioBean.data}" rowKey="#{item.idUsuario}">
+                        <p:ajax event="rowSelect" listener="#{usuarioBean.onRowSelect}" update=":frmAdd"/>
                         <p:column sortBy="#{item.idUsuario}">
-                        <f:facet name="header">
-                            <h:outputText value="IdUsuario"/>
-                        </f:facet>
-                        <h:outputText value="#{item.idUsuario}"/>
-                    </p:column>
+                            <f:facet name="header">
+                                <h:outputText value="IdUsuario"/>
+                            </f:facet>
+                            <h:outputText value="#{item.idUsuario}"/>
+                        </p:column>
                         <p:column sortBy="#{item.apellidos}">
-                        <f:facet name="header">
-                            <h:outputText value="Apellidos"/>
-                        </f:facet>
-                        <h:outputText value="#{item.apellidos}"/>
-                    </p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Apellidos"/>
+                            </f:facet>
+                            <h:outputText value="#{item.apellidos}"/>
+                        </p:column>
                         <p:column sortBy="#{item.nombres}">
-                        <f:facet name="header">
-                            <h:outputText value="Nombres"/>
-                        </f:facet>
-                        <h:outputText value="#{item.nombres}"/>
-                    </p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Nombres"/>
+                            </f:facet>
+                            <h:outputText value="#{item.nombres}"/>
+                        </p:column>
                         <p:column sortBy="#{item.fechaNacimiento}">
-                        <f:facet name="header">
-                            <h:outputText value="FechaNacimiento"/>
-                        </f:facet>
-                        <h:outputText value="#{item.fechaNacimiento}">
-                            <f:convertDateTime pattern="yyyy-MM-dd" />
-                        </h:outputText>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Activo"/>
-                        </f:facet>
-                        <h:outputText value="#{item.activo}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Comentarios"/>
-                        </f:facet>
-                        <h:outputText value="#{item.comentarios}"/>
-                    </p:column>
+                            <f:facet name="header">
+                                <h:outputText value="FechaNacimiento"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fechaNacimiento}">
+                                <f:convertDateTime pattern="yyyy-MM-dd" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Activo"/>
+                            </f:facet>
+                            <h:outputText value="#{item.activo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Comentarios"/>
+                            </f:facet>
+                            <h:outputText value="#{item.comentarios}"/>
+                        </p:column>
                         <p:column sortBy="#{item.username}">
-                        <f:facet name="header">
-                            <h:outputText value="Username"/>
-                        </f:facet>
-                        <h:outputText value="#{item.username}"/>
-                    </p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Username"/>
+                            </f:facet>
+                            <h:outputText value="#{item.username}"/>
+                        </p:column>
                         <p:column sortBy="#{item.password}">
-                        <f:facet name="header">
-                            <h:outputText value="Password"/>
-                        </f:facet>
-                        <h:outputText value="#{item.password}"/>
-                    </p:column>
-                </p:dataTable>
+                            <f:facet name="header">
+                                <h:outputText value="Password"/>
+                            </f:facet>
+                            <h:outputText value="#{item.password}"/>
+                        </p:column>
+                    </p:dataTable>
                 </div>
             </h:form>
         </f:view>
-        <div align="center">
+        <br/>
+        <div align="center" >
             <f:view>
                 <h:form id="frmAdd">
-                    <p:growl id="growl" showDetail="true" sticky="true"/>
-                    <h1><h:outputText value="Agregar"/></h1>
+                    <div align="center">
+                        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                    </div>
                     <p:panelGrid columns="2">
                         <p:outputLabel value="Nombres:" for="nombres" />
                         <p:inputText id="nombres" value="#{usuarioBean.data.nombres}" title="Nombres" required="true" requiredMessage="The Nombres field is required."/>
@@ -95,9 +98,18 @@
                         <p:outputLabel value="Password:" for="password" />
                         <p:inputText id="password" value="#{usuarioBean.data.password}" title="Password" required="true" requiredMessage="The Password field is required."/>
                     </p:panelGrid>
-                    <div align="center">
-                    <p:commandButton value="Agregar" actionListener="#{usuarioBean.crear()}" update="@all" />
-                    <p:commandButton value="Limpiar" actionListener="#{usuarioBean.btnLimpiar()}" update="@all"/>
+                    <div>
+                        <p:panel visible="#{!usuarioBean.btnEdit}" style="border: #004D40;background-color: #004D40">
+                            <p:commandButton value="Agregar" actionListener="#{usuarioBean.crear()}" update="@all" />
+                            <p:commandButton value="Limpiar" type="reset"/>
+                        </p:panel>
+                        <p:panel visible="#{usuarioBean.btnEdit}" style="border: #004D40;background-color:  #004D40">
+                            <p:commandButton value="Editar" actionListener="#{usuarioBean.editar()}" update="@all" />
+                            <p:commandButton value="Eliminar" actionListener="#{usuarioBean.eliminar()}" update="@all" />
+                            <p:commandButton value="Cancelar" immediate="true">
+                                <p:ajax listener="#{usuarioBean.btnCancelar()}" update="@all"/>
+                            </p:commandButton>
+                        </p:panel>
                     </div>
                 </h:form>
             </f:view>

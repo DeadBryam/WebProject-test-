@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import org.primefaces.event.SelectEvent;
 import sv.edu.uesocc.ingenieria.prn335_2017.datos.acceso.UsuarioFacadeLocal;
 import sv.edu.uesocc.ingenieria.prn335_2017.datos.definiciones.Usuario;
 
@@ -28,27 +29,35 @@ import sv.edu.uesocc.ingenieria.prn335_2017.datos.definiciones.Usuario;
  */
 @Named(value = "usuarioBean")
 @ViewScoped
-public class UsuarioBean implements Serializable{
+public class UsuarioBean implements Serializable {
 
     /**
      * Creates a new instance of UsuarioBean
      */
     public UsuarioBean() {
     }
-    
-    boolean activo;
 
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
+    boolean chkFitro, btnEdit = false;
     @EJB
     UsuarioFacadeLocal usuario;
     List<Usuario> usuarioData = new ArrayList<>();
     Usuario data = new Usuario();
+
+    public boolean isChkFitro() {
+        return chkFitro;
+    }
+
+    public void setChkFitro(boolean chkFitro) {
+        this.chkFitro = chkFitro;
+    }
+
+    public boolean isBtnEdit() {
+        return btnEdit;
+    }
+
+    public void setBtnEdit(boolean btnEdit) {
+        this.btnEdit = btnEdit;
+    }
 
     public UsuarioFacadeLocal getUsuario() {
         return usuario;
@@ -73,50 +82,62 @@ public class UsuarioBean implements Serializable{
     public void setData(Usuario data) {
         this.data = data;
     }
-    
+
     /**
      * Este metodo sirve para poder agregar un nuevo registro a la base de datos
      */
     public void crear() {
-            try {
-                usuario.create(data);
-                init();
-                showMessage("Datos ingresado correctamente.");
-                data = new Usuario();
-            } catch (Exception e) {
-                System.out.println("Error: " + e);
-                showMessage("Error al ingresar los datos.");
-            }
+        try {
+            usuario.create(data);
+            init();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro agregado correctamente"));
+            data = new Usuario();
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al agregar un nuego registro."));
+        }
     }
+
+    public void editar() {
+        try {
+            usuario.edit(data);
+            init();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Edicion correcta."));
+            btnEdit = false;
+            data = new Usuario();
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al editar registro."));
+        }
+    }
+    
+    public void eliminar() {
+        try {
+            usuario.remove(data);
+            init();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Registro removido correctamente."));
+            btnEdit = false;
+            data = new Usuario();
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al eliminar."));
+        }
+    }
+
     /**
      * Es metodo sirve para detectar el cambio de un checkbox alojado en el jsf
      */
-    public void chkCambio(){
-        if(activo == true){
+    public void chkCambio() {
+        if (chkFitro == true) {
             this.usuarioData = obtenerUtilizados();
-        }else{
+        } else {
             init();
         }
-        
     }
-    
+
     /**
-     * Este metodo sirve para mostrar un mensaje un el usuario
-     * @param Mensaje espera el mensaje que sera mostrado al usuario
-     */
-    public void showMessage(String Mensaje) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.addMessage(null, new FacesMessage(Mensaje));
-    }
-    /**
-     * Este metodo sirve para limpiar el formulario
-     */
-    public void btnLimpiar(){
-        data = new Usuario();
-    }
-    
-    /**
-     * Este metodo sirve para filtrar usuarios no utilizados 
+     * Este metodo sirve para filtrar usuarios no utilizados
+     *
      * @return una lista con los usuarios que no han sido utiizados
      */
     public List<Usuario> obtenerUtilizados() {
@@ -125,14 +146,23 @@ public class UsuarioBean implements Serializable{
         EntityManager em = emf.createEntityManager();
         Query c = em.createNamedQuery("Usuario.noUtilizados");
         salida = c.getResultList();
-        
-        if(salida != null){
-        return salida;
-        }else{
+
+        if (salida != null) {
+            return salida;
+        } else {
             return Collections.EMPTY_LIST;
         }
     }
-    
+
+    public void onRowSelect(SelectEvent event) {
+        btnEdit = true;
+    }
+
+    public void btnCancelar() {
+        data = new Usuario();
+        btnEdit = false;
+    }
+
     @PostConstruct
     /**
      * Este metodo llena una lista con los dato de la base de datos
