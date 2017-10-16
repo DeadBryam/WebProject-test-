@@ -31,7 +31,6 @@ public abstract class AbstractFacade<T> {
         } catch (Exception e) {
             System.out.println("ERROR: " + e);
         }
-
     }
 
     public void edit(T entity) {
@@ -68,5 +67,5 @@ public abstract class AbstractFacade<T> {
         javax.persistence.Query q = getEntityManager().createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
-
+    
 }

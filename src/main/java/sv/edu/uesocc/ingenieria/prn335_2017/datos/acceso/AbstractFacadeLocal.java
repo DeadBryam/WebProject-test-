@@ -6,26 +6,25 @@
 package sv.edu.uesocc.ingenieria.prn335_2017.datos.acceso;
 
 import java.util.List;
-import sv.edu.uesocc.ingenieria.prn335_2017.datos.definiciones.Usuario;
 
 /**
  *
  * @author bryan
  */
-public interface FacadeLocal {
+public interface AbstractFacadeLocal<T> {
     
-    void create(Usuario usuario);
+    void create(T e);
 
-    void edit(Usuario usuario);
+    void edit(T e);
 
-    void remove(Usuario usuario);
+    void remove(T e);
 
-    Usuario find(Object id);
+    T find(Object id);
 
-    List<Usuario> findAll();
+    List<T> findAll();
 
-    List<Usuario> findRange(int[] range);
-    
+    List<T> findRange(int[] range);
+
     int count();
     
     

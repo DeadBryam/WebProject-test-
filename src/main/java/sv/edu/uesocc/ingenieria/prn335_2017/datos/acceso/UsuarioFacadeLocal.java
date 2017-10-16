@@ -6,12 +6,12 @@
 package sv.edu.uesocc.ingenieria.prn335_2017.datos.acceso;
 
 import javax.ejb.Local;
+import sv.edu.uesocc.ingenieria.prn335_2017.datos.definiciones.Usuario;
 
 /**
  *
  * @author bryan
  */
 @Local
-public interface UsuarioFacadeLocal extends FacadeLocal{
-
-}
+public interface UsuarioFacadeLocal extends AbstractFacadeLocal<Usuario>{
+    }

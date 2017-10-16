@@ -7,9 +7,9 @@
     <h:head>
         <title>Usuarios</title>
     </h:head>
-    <h:body style="background: #004D40">
+    <h:body  style="background: #004D40">
         <f:view>
-            <h1 align="center" style="color: white;font-family: cursive">Tabla usuarios</h1>
+            <h1 align="center" style="color: white;font-family: cursive;">Tabla usuarios</h1>
             <h:form id="frmDatos" >
                 <div>
                     <p:selectBooleanCheckbox id="chkUsados" value="#{usuarioBean.chkFitro}" itemLabel="Mostrar los no utilizados" style="color: white">
@@ -98,7 +98,7 @@
                         <p:outputLabel value="Password:" for="password" />
                         <p:inputText id="password" value="#{usuarioBean.data.password}" title="Password" required="true" requiredMessage="The Password field is required."/>
                     </p:panelGrid>
-                    <div>
+                    <div style="">
                         <p:panel visible="#{!usuarioBean.btnEdit}" style="border: #004D40;background-color: #004D40">
                             <p:commandButton value="Agregar" actionListener="#{usuarioBean.crear()}" update="@all" />
                             <p:commandButton value="Limpiar" type="reset"/>
